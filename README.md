@@ -67,11 +67,9 @@ API_DEBUG=false
 - 不要将密钥、令牌或其他私密凭据放入 `API_BASE_URL` 或任何会进入浏览器构建产物的变量。此站点的配置是公开前端配置。
 - 后端需配置允许官网来源的 CORS。官网未绑定未经确认的业务 endpoint；具体 endpoint、请求类型和响应结构应以正式 API 文档为准。
 
-## 在线官网与部署
+## 部署
 
-本仓库针对 GitHub Pages 项目站点配置，官网地址为 [https://wrt-imp.github.io/converge/](https://wrt-imp.github.io/converge/)。推送到 `main` 会通过 `.github/workflows/deploy-pages.yml` 自动检查并构建站点，然后发布 `build/`。首次发布前，请在 GitHub 仓库的 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。后续每次推送到 `main` 都会触发部署。
-
-站点基址在 `docusaurus.config.ts` 中配置为 `https://wrt-imp.github.io/converge/`。如更改 GitHub 用户名、仓库名或改用自定义域名，需同步修改 `url` 和 `baseUrl`。也可在其他静态托管平台部署：
+这是静态 Docusaurus 站点。部署前先在 `docusaurus.config.ts` 中将 `url` 和 `baseUrl` 设置为正式站点的 origin 与部署路径，然后执行：
 
 ```bash
 npm ci
@@ -80,7 +78,7 @@ npm run lint
 npm run build
 ```
 
-若接入后端 API，还需同步配置生产 `API_BASE_URL` 与后端 CORS。API 地址属于公开前端配置，不要在其中放置私密密钥。
+将 `build/` 内容发布到所选静态托管平台，并配置 SPA/静态资源回退规则（按托管平台要求）。若部署在子路径，`baseUrl` 必须与实际挂载路径一致；若接入后端 API，还需同步配置生产 `API_BASE_URL` 与后端 CORS。当前仓库不假定具体域名或托管平台，也不会自动部署。
 
 ## 目录结构
 

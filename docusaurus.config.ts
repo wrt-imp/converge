@@ -37,10 +37,8 @@ function getPublicApiBaseUrl(): string {
 const config: Config = {
   title: 'Converge',
   tagline: '面向编程教育的教学认知状态引擎',
-  // GitHub Pages project site: https://wrt-imp.github.io/converge/
-  url: 'https://wrt-imp.github.io',
-  baseUrl: '/converge/',
-  trailingSlash: false,
+  url: 'https://converge.example.com',
+  baseUrl: '/',
   customFields: {
     // Only public connection settings are exposed to the browser bundle.
     apiBaseUrl: getPublicApiBaseUrl(),
