@@ -1,0 +1,374 @@
+.container {
+  width: min(var(--container-width, var(--content-max-width)), calc(100% - (2 * var(--page-padding))));
+  margin-inline: auto;
+}
+
+.containerNarrow { --container-width: var(--content-narrow-width); }
+.containerDefault { --container-width: var(--content-max-width); }
+.containerWide { --container-width: var(--content-wide-width); }
+
+.section {
+  padding-block: var(--section-space);
+}
+
+.sectionCompact { padding-block: var(--section-space-compact); }
+.sectionSubtle { background: var(--surface-subtle); }
+.sectionRuled { border-block: 1px solid var(--border-subtle); }
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: end;
+  max-width: 880px;
+}
+
+.sectionHeaderCentered {
+  display: flex;
+  max-width: 760px;
+  margin-inline: auto;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sectionEyebrow,
+.featureEyebrow {
+  margin: 0 0 14px;
+  color: var(--brand-primary);
+  font-size: 0.76rem;
+  font-weight: 720;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  max-width: 760px;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 620;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.sectionIntro {
+  max-width: 680px;
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
+}
+
+.sectionAction { flex: none; }
+.sectionBody { margin-top: 56px; }
+
+.button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-weight: 650;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) ease,
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.button:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.button:active { transform: translateY(0); }
+
+.button[aria-disabled='true'],
+.button:disabled {
+  color: var(--text-tertiary);
+  border-color: var(--border-subtle);
+  background: var(--surface-subtle);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.buttonSmall { min-height: 40px; padding: 9px 14px; font-size: 0.9rem; }
+.buttonMedium { padding: 11px 18px; font-size: 0.96rem; }
+.buttonLarge { min-height: 48px; padding: 13px 22px; font-size: 1rem; }
+.buttonFull { width: 100%; }
+
+.buttonPrimary {
+  color: #ffffff;
+  background: var(--brand-primary);
+}
+
+.buttonPrimary:hover { color: #ffffff; background: var(--brand-hover); }
+
+.buttonSecondary {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--site-bg);
+}
+
+.buttonSecondary:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+  background: var(--surface-subtle);
+}
+
+.buttonText {
+  min-height: 40px;
+  padding-inline: 4px;
+  color: var(--brand-primary);
+  background: transparent;
+}
+
+.buttonText:hover { color: var(--brand-hover); }
+
+.buttonDanger { color: #ffffff; background: var(--status-error); }
+.buttonDanger:hover { color: #ffffff; background: var(--status-error-hover); }
+.buttonIcon { display: inline-grid; flex: none; place-items: center; }
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.card {
+  min-width: 0;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+}
+
+.cardBordered { border: 1px solid var(--border-subtle); background: var(--surface-raised); }
+.cardSoft { border: 1px solid transparent; background: var(--surface-subtle); }
+.cardPlain { border: 0; background: transparent; }
+.cardPaddingSmall { padding: 20px; }
+.cardPaddingMedium { padding: 28px; }
+.cardPaddingLarge { padding: 36px; }
+
+.cardInteractive {
+  transition:
+    border-color var(--motion-base) ease,
+    transform var(--motion-base) var(--ease-out);
+}
+
+.cardInteractive:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.featureCard {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+
+.featureIcon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 30px;
+  place-items: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--brand-primary);
+  background: var(--site-bg);
+}
+
+.featureTitle {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 640;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.featureDescription {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.featureLink {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 24px;
+  color: var(--brand-primary);
+  font-weight: 620;
+  text-decoration: none;
+}
+
+.featureLink:hover { color: var(--brand-hover); text-decoration: underline; }
+
+.screenshotFigure,
+.diagramFigure { margin: 0; }
+
+.screenshotFrame {
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
+}
+
+.screenshotBar {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  background: var(--surface-raised);
+  font-size: 0.78rem;
+}
+
+.screenshotLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.screenshotImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--surface-subtle);
+}
+
+.screenshotCaption,
+.diagramCaption {
+  max-width: 760px;
+  margin-top: 14px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.diagramFigure {
+  padding: 28px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.diagramHeader { max-width: 720px; margin-bottom: 26px; }
+
+.diagramTitle {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  font-weight: 640;
+  line-height: 1.35;
+}
+
+.diagramDescription {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.diagramViewport { max-width: 100%; }
+.diagramScrollable { overflow-x: auto; overscroll-behavior-inline: contain; }
+
+.diagramCanvas {
+  min-width: min-content;
+  padding: 24px;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-subtle);
+  background-image:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.diagramLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 18px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
+  align-items: center;
+  padding-block: 48px;
+  border-block: 1px solid var(--border-subtle);
+}
+
+.ctaContent { max-width: 700px; }
+
+.ctaTitle {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  font-weight: 620;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.ctaDescription {
+  margin: 14px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 767px) {
+  .sectionHeader,
+  .cta {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeader { align-items: start; }
+  .sectionBody { margin-top: 40px; }
+  .cardPaddingLarge { padding: 28px; }
+  .diagramFigure { padding: 20px; }
+  .diagramCanvas { padding: 18px; }
+  .cta { gap: 28px; padding-block: 36px; }
+  .ctaActions { justify-content: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .cardPaddingMedium,
+  .cardPaddingLarge { padding: 22px; }
+  .buttonFullMobile { width: 100%; }
+}

@@ -1,0 +1,10 @@
+# Local dependencies and generated Docusaurus output.
+node_modules/
+.docusaurus/
+build/
+
+npm-debug.log*
+
+# Local environment values must never be committed.
+.env
+.env.local
