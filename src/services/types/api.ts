@@ -9,11 +9,3 @@ export interface ApiErrorBody {
 export interface HealthStatus {
   status: 'ok';
 }
-
-/** Error envelope documented by server/docs/api.md. */
-export interface ApiErrorResponse {
-  error: {
-    code: string;
-    message: string;
-  };
-}

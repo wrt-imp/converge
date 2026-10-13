@@ -1,0 +1,32 @@
+.downloadPage { background: var(--paper); }
+.installSection, .downloadNotice, .downloadMore { padding: var(--section-space) var(--page-padding); }
+.installSection :global(ol) { margin-bottom: 40px; }
+.installCommands { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border-strong); }
+.installCommands > div { display: grid; grid-template-columns: 100px 1fr; gap: 20px; align-items: center; min-height: 58px; border-bottom: 1px solid var(--border-subtle); }
+.installCommands span { color: #6848c4; font: 650 .59rem/1.2 var(--ifm-font-family-base); letter-spacing: .08em; }
+.installCommands code { overflow-x: auto; color: var(--text-primary); background: transparent; font-size: .8rem; white-space: nowrap; }
+.installNote { margin: 16px 0 0; color: var(--text-tertiary); font-size: .72rem; }
+.releaseCard { padding: 25px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--site-bg); }
+.releaseCard > span { display: block; margin-bottom: 26px; color: #6848c4; font: 650 .59rem/1.2 var(--ifm-font-family-base); letter-spacing: .1em; }
+.releaseCard strong { display: block; color: var(--text-primary); font: 500 1.8rem/1.2 Georgia, "Songti SC", serif; }
+.releaseCard p { margin: 12px 0 20px; color: var(--text-secondary); font-size: .82rem; }
+.releaseCard i { display: block; padding-top: 14px; color: var(--text-tertiary); border-top: 1px solid var(--border-subtle); font-size: .65rem; font-style: normal; }
+.packageSlot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border-subtle); }
+.packageSlot > div { display: grid; gap: 4px; }
+.packageSlot > div > span { color: #6848c4; font: 650 .56rem/1.2 var(--ifm-font-family-base); letter-spacing: .1em; }
+.packageSlot b { color: var(--text-primary); font-size: .8rem; font-weight: 620; }
+.packageSlot small { color: var(--text-tertiary); font-size: .67rem; }
+.packageSlot :global(a[aria-disabled='true']) { cursor: not-allowed; opacity: .58; }
+.packageStatus { margin: 10px 0 0 !important; color: var(--text-tertiary) !important; font-size: .65rem !important; }
+.downloadNotice { display: grid; grid-template-columns: 1.1fr .9fr; gap: 30px 8vw; align-items: center; background: #20211d; }
+.downloadNotice > div > span { display: block; margin-bottom: 20px; color: #c7b2ff; font: 650 .61rem/1.2 var(--ifm-font-family-base); letter-spacing: .12em; }
+.downloadNotice h2 { max-width: 640px; margin: 0; color: #f1f0e8; font-size: clamp(2rem, 3.5vw, 3.1rem); font-weight: 500; letter-spacing: -.04em; line-height: 1.08; }
+.downloadNotice > p { margin: 0; color: #b9bab2; font-size: .88rem; }
+.downloadNotice > a { grid-column: 2; color: #c7b2ff; font-size: .83rem; font-weight: 600; text-decoration: none; }
+.downloadMore { text-align: center; }
+.downloadMore :global(header) { margin-inline: auto; }
+.downloadMore > div:last-child { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; border: 1px solid var(--border-subtle); background: var(--border-subtle); text-align: left; }
+.downloadMore a { display: grid; gap: 7px; padding: 20px; color: var(--text-primary); background: var(--paper); text-decoration: none; }
+.downloadMore a:hover { background: var(--surface-subtle); }
+.downloadMore b { font-size: .9rem; font-weight: 620; }.downloadMore span { color: var(--text-secondary); font-size: .7rem; }
+@media (max-width: 720px) { .downloadSection, .installSection, .downloadNotice, .downloadMore { padding-inline: 20px; }.downloadNotice { grid-template-columns: 1fr; gap: 18px; }.downloadNotice > a { grid-column: 1; }.downloadMore > div:last-child { grid-template-columns: 1fr; }.installCommands > div { grid-template-columns: 72px 1fr; gap: 10px; }.installCommands code { font-size: .67rem; } }

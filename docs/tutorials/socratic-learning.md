@@ -22,7 +22,7 @@ import {StepCard, InfoBox, Flow} from '@site/src/components/DocBlocks';
 
 <StepCard number="01" title="说明你想理解的主题">
 
-在对话中输入一个具体主题，例如递归、函数参数或其他课程知识点，并说明自己的疑问。
+在对话中输入一个具体主题，例如变量作用域、函数参数或其他课程知识点，并说明自己的疑问。
 
 </StepCard>
 

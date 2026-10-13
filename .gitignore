@@ -3,6 +3,8 @@ node_modules/
 .docusaurus/
 build/
 
+# Generated npm metadata is intentionally kept local during the early scaffold stage.
+package-lock.json
 npm-debug.log*
 
 # Local environment values must never be committed.

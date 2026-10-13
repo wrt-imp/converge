@@ -1,0 +1,45 @@
+.architecturePage { background: var(--paper); }
+.layerSection, .boundaries, .dataTrace, .architectureCta { padding: var(--section-space) var(--page-padding); }
+.archHeroCard { padding: 22px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--site-bg); }
+.archHeroCard > span { display: block; margin-bottom: 20px; color: #6848c4; font: 650 .58rem/1.2 var(--ifm-font-family-base); letter-spacing: .1em; }
+.archHeroCard > div { display: grid; grid-template-columns: 28px 1fr; gap: 11px; align-items: center; padding: 12px 0; border-top: 1px solid var(--border-subtle); }
+.archHeroCard i { display: grid; width: 24px; height: 24px; place-items: center; color: #6848c4; border-radius: 50%; background: #eee9fb; font: 650 .56rem/1 var(--ifm-font-family-base); font-style: normal; }
+.archHeroCard b { color: var(--text-primary); font-size: .8rem; font-weight: 600; }
+.archHeroCard small { display: block; margin-top: 15px; color: var(--text-tertiary); font-size: .68rem; }
+.layerMap { width: min(920px, 100%); margin-inline: auto; }
+.layerMain { display: grid; grid-template-columns: 44px 180px 1fr; gap: 16px; align-items: center; padding: 20px 24px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--site-bg); }
+.layerRow:nth-child(2) .layerMain { border-color: #d0c0f2; background: #f2eefb; }
+.layerIndex { color: #6848c4; font: 650 .63rem/1 var(--ifm-font-family-base); }
+.layerLabel small, .layerLabel strong { display: block; }
+.layerLabel small { margin-bottom: 5px; color: var(--text-tertiary); font: 600 .52rem/1 var(--ifm-font-family-base); letter-spacing: .09em; }
+.layerLabel strong { color: var(--text-primary); font-size: 1rem; font-weight: 600; }
+.layerItems { display: flex; flex-wrap: wrap; gap: 6px; }
+.layerItems span { padding: 6px 9px; color: #50566e; border: 1px solid var(--border-subtle); border-radius: 99px; background: var(--paper); font-size: .65rem; line-height: 1.2; }
+.layerMain p { grid-column: 3; margin: 0; color: var(--text-secondary); font-size: .72rem; }
+.layerArrow { display: grid; height: 31px; place-items: center; }
+.layerArrow span { position: relative; width: 1px; height: 100%; background: #c5b7e8; }
+.layerArrow span::after { position: absolute; bottom: -1px; left: -3px; width: 6px; height: 6px; border-right: 1px solid #8a70cc; border-bottom: 1px solid #8a70cc; content: ''; transform: rotate(45deg); }
+.boundaries { background: #eeece5; }
+.boundaryGrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; border: 1px solid #d7d5cd; background: #d7d5cd; }
+.boundaryGrid article { padding: 25px; background: #f7f5ef; }
+.boundaryGrid span { color: #6848c4; font: 650 .57rem/1.2 var(--ifm-font-family-base); letter-spacing: .08em; }
+.boundaryGrid h3 { margin: 22px 0 9px; font-size: 1.25rem; font-weight: 500; }
+.boundaryGrid p { margin: 0; color: var(--text-secondary); font-size: .82rem; }
+.dataTrace { display: grid; grid-template-columns: .75fr 1.25fr; gap: 8vw; align-items: center; color: #f0efe8; background: #20211d; }
+.traceKicker { margin: 0 0 22px; color: #c7b2ff; font: 650 .62rem/1.2 var(--ifm-font-family-base); letter-spacing: .12em; }
+.dataTrace h2 { margin: 0; color: #f3f1e9; font-size: clamp(2.2rem, 4vw, 3.6rem); font-weight: 500; letter-spacing: -.04em; line-height: 1.02; }
+.dataTrace > div:first-child > p:not(.traceKicker) { margin: 18px 0; color: #b6b7af; font-size: .9rem; }
+.dataTrace a { color: #c7b2ff; font-size: .86rem; font-weight: 600; text-decoration: none; }
+.traceGraph { display: grid; grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1fr; align-items: center; gap: 8px; }
+.traceGraph > div { min-width: 0; padding: 14px 12px; border: 1px solid rgba(255,255,255,.14); border-radius: 9px; background: rgba(255,255,255,.045); }
+.traceGraph small, .traceGraph strong, .traceGraph span { display: block; }
+.traceGraph small { color: #c7b2ff; font: 650 .49rem/1.3 var(--ifm-font-family-base); letter-spacing: .07em; }
+.traceGraph strong { margin: 9px 0 5px; color: #eeede6; font-size: .76rem; font-weight: 600; }
+.traceGraph span { color: #b4b5ad; font-size: .61rem; line-height: 1.4; }
+.traceGraph > i { color: #b49bff; font-style: normal; text-align: center; }
+.traceGraph .traceAction { border-color: rgba(174,181,255,.4); background: rgba(111,126,241,.12); }
+.architectureCta { text-align: center; }
+.architectureCta :global(header) { margin-inline: auto; }
+.architectureCta > div:last-child { display: flex; justify-content: center; gap: 12px; }
+@media (max-width: 900px) { .layerMain { grid-template-columns: 34px 150px 1fr; }.dataTrace { grid-template-columns: 1fr; gap: 32px; } }
+@media (max-width: 620px) { .layerSection, .boundaries, .dataTrace, .architectureCta { padding-inline: 20px; }.layerMain { grid-template-columns: 26px 1fr; gap: 11px; padding: 17px; }.layerItems, .layerMain p { grid-column: 2; }.layerMain p { margin-top: 3px; }.boundaryGrid { grid-template-columns: 1fr; }.traceGraph { grid-template-columns: 1fr; }.traceGraph > i { transform: rotate(90deg); }.architectureCta > div:last-child { flex-direction: column; max-width: 280px; margin-inline: auto; } }

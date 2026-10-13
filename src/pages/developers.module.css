@@ -1,0 +1,36 @@
+.developerPage { background: var(--paper); }
+.devPrinciples, .devWorkflow, .devReferences { padding: var(--section-space) var(--page-padding); }
+.devPrincipleGrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; border-top: 1px solid var(--border-strong); }
+.devPrincipleGrid article { position: relative; padding: 25px 0 0; }
+.devPrincipleGrid article > span { display: inline-grid; width: 27px; height: 27px; place-items: center; color: #6848c4; border: 1px solid #d0c0f2; border-radius: 50%; font: 650 .56rem/1 var(--ifm-font-family-base); }
+.devPrincipleGrid h3 { margin: 21px 0 8px; font-size: 1.35rem; font-weight: 500; }
+.devPrincipleGrid p { max-width: 340px; min-height: 76px; color: var(--text-secondary); font-size: .84rem; }
+.devPrincipleGrid a, .referenceGrid > a { color: #6042b5; font-size: .79rem; font-weight: 650; text-decoration: none; }
+.devWorkflow { display: grid; grid-template-columns: .85fr 1.15fr; gap: 8vw; align-items: center; background: #eeece5; }
+.devWorkflowIntro { max-width: 460px; }
+.devKicker { margin: 0 0 22px; color: #6848c4; font: 650 .63rem/1.2 var(--ifm-font-family-base); letter-spacing: .12em; }
+.devWorkflowIntro h2, .devApiNote h2 { margin: 0; font-size: clamp(2.3rem, 4.2vw, 3.8rem); font-weight: 500; letter-spacing: -.04em; line-height: 1.03; }
+.devWorkflowIntro > p:last-child { margin-top: 18px; color: var(--text-secondary); font-size: .9rem; }
+.devWorkflowPanel { padding: 25px; border: 1px solid #d8d6ce; border-radius: var(--radius-md); background: var(--paper); box-shadow: 0 12px 42px rgba(23,24,22,.04); }
+.workflowFile { display: grid; gap: 6px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); }
+.workflowFile span { color: var(--text-tertiary); font: 600 .54rem/1.2 var(--ifm-font-family-base); letter-spacing: .06em; }
+.workflowFile b { font-size: .8rem; font-weight: 600; }
+.devWorkflowPanel ol { display: grid; gap: 0; margin: 16px 0 0; padding: 0; list-style: none; }
+.devWorkflowPanel li { display: grid; grid-template-columns: 30px 1fr 1.2fr; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); }
+.devWorkflowPanel li i { color: #6848c4; font: 650 .59rem/1 var(--ifm-font-family-base); font-style: normal; }
+.devWorkflowPanel li span { color: var(--text-primary); font-size: .78rem; font-weight: 600; }
+.devWorkflowPanel li small { color: var(--text-tertiary); font-size: .63rem; }
+.devWorkflowPanel > p { margin: 15px 0 0; color: var(--text-tertiary); font-size: .64rem; }
+.referenceGrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; border: 1px solid var(--border-subtle); background: var(--border-subtle); }
+.referenceGrid > a { position: relative; display: grid; gap: 8px; min-height: 140px; padding: 22px; color: var(--text-primary); background: var(--paper); transition: background var(--motion-fast) ease; }
+.referenceGrid > a:hover { background: var(--surface-subtle); }
+.referenceGrid small { color: #6848c4; font: 650 .56rem/1.2 var(--ifm-font-family-base); letter-spacing: .09em; }
+.referenceGrid strong { font-size: 1rem; font-weight: 600; }
+.referenceGrid span { color: var(--text-secondary); font-size: .73rem; }
+.referenceGrid i { position: absolute; top: 21px; right: 22px; color: #6848c4; font-size: .9rem; font-style: normal; }
+.devApiNote { display: grid; grid-template-columns: .9fr 1.1fr; gap: 8vw; align-items: center; padding: var(--section-space) var(--page-padding); color: #f1f0e8; background: #20211d; }
+.devApiNote > div > span { display: block; margin-bottom: 20px; color: #c7b2ff; font: 650 .6rem/1.2 var(--ifm-font-family-base); letter-spacing: .12em; }
+.devApiNote h2 { max-width: 560px; color: #f1f0e8; }
+.devApiNote > p { max-width: 470px; margin: 0; color: #b8b9b1; font-size: .92rem; }
+@media (max-width: 850px) { .devWorkflow, .devApiNote { grid-template-columns: 1fr; gap: 34px; }.devPrincipleGrid { gap: 20px; } }
+@media (max-width: 620px) { .devPrinciples, .devWorkflow, .devReferences, .devApiNote { padding-inline: 20px; }.devPrincipleGrid { grid-template-columns: 1fr; gap: 24px; }.devPrincipleGrid p { min-height: auto; }.referenceGrid { grid-template-columns: 1fr; }.devWorkflowPanel { padding: 17px; }.devWorkflowPanel li { grid-template-columns: 26px 1fr; }.devWorkflowPanel li small { grid-column: 2; }.devWorkflowPanel li span { font-size: .73rem; } }

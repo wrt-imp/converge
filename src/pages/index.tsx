@@ -1,337 +1,268 @@
-import type {ReactNode} from 'react';
+import type {CSSProperties, ReactNode} from 'react';
 import Layout from '@theme/Layout';
+import Link from '@docusaurus/Link';
 import clsx from 'clsx';
-import {
-  Button,
-  Card,
-  Container,
-  CTA,
-  Diagram,
-  FeatureCard,
-  Section,
-} from '../components';
-import CognitiveModelFigure from '../components/CognitiveModelFigure';
+import {Button} from '../components';
+import {CodeWindow, StepSequence} from '../components/SitePrimitives';
 import styles from './index.module.css';
 
-const loopSteps = [
-  {name: '识别', detail: '学习目标'},
-  {name: '评估', detail: '回答证据'},
-  {name: '诊断', detail: '卡点原因'},
-  {name: '干预', detail: '教学动作'},
-  {name: '验证', detail: '迁移表现'},
-  {name: '更新', detail: '认知状态'},
-] as const;
-
-const loopStepClass = [
-  styles.loopStepOne,
-  styles.loopStepTwo,
-  styles.loopStepThree,
-  styles.loopStepFour,
-  styles.loopStepFive,
-  styles.loopStepSix,
+const features = [
+  {number: '01', title: 'Model the learner', text: '把掌握度、知识缺口和可能的误解表示成持续变化的状态。', tag: 'LEARNER STATE'},
+  {number: '02', title: 'Ground every decision', text: '把教学判断关联到回答、追问、练习与可检索的知识依据。', tag: 'EVIDENCE · RAG · WIKI'},
+  {number: '03', title: 'Choose the next move', text: '由教学策略决定追问、提示、反例、练习，或适时解释。', tag: 'SOCRATIC · SKILLS'},
 ];
 
-type CapabilityIconName = 'state' | 'socratic' | 'knowledge' | 'memory' | 'skills' | 'agents';
+type HeroParticle = [number, number, number, number, number, number];
 
-function CapabilityIcon({name}: {name: CapabilityIconName}): ReactNode {
-  const common = {
-    width: 22,
-    height: 22,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.7,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-  };
+const heroParticles: HeroParticle[] = [
+  [3, 11, 10, -9, 8.4, -1.7], [9, 21, -8, 12, 10.2, -5.1], [16, 5, 7, 10, 7.6, -3.4],
+  [22, 17, -12, -7, 9.8, -2.2], [28, 6, 9, -13, 11.3, -7.4], [34, 23, -7, 9, 8.9, -4.8],
+  [41, 4, 12, 8, 10.7, -6.3], [47, 15, -9, -11, 7.9, -2.9], [54, 7, 8, 13, 12.1, -8.2],
+  [61, 20, -11, 7, 9.2, -1.2], [68, 5, 7, -10, 11.6, -5.7], [76, 16, -8, 12, 8.1, -3.9],
+  [84, 8, 11, -8, 10.4, -7.1], [94, 20, -10, 9, 9.6, -4.2], [6, 43, 8, -12, 11.2, -6.8],
+  [14, 57, -11, 8, 8.7, -2.6], [24, 72, 9, -10, 10.9, -5.4], [34, 88, -8, -9, 7.8, -1.9],
+  [43, 77, 12, 7, 12.4, -8.8], [52, 93, -10, -8, 9.1, -3.1], [63, 81, 8, 11, 10.1, -6.1],
+  [73, 91, -12, -7, 8.3, -2.4], [82, 70, 9, 10, 11.8, -7.9], [93, 84, -8, -11, 9.4, -4.5],
+  [2, 79, 11, 8, 10.6, -6.6], [18, 34, -9, -10, 8.2, -1.4], [31, 48, 10, 11, 11.5, -8.5],
+  [70, 39, -11, -8, 9.7, -3.6], [89, 48, 8, 12, 12.2, -7.6], [98, 61, -10, -9, 8.6, -2.8],
+  [1, 8, -8, 11, 7.2, -3.7], [5, 26, 12, -8, 8.8, -6.4], [8, 15, -10, -12, 9.3, -1.5],
+  [11, 4, 7, 9, 10.8, -5.8], [19, 11, -9, 13, 7.7, -4.6], [25, 2, 11, -7, 9.9, -7.2],
+  [37, 12, -12, 8, 8.5, -2.7], [45, 2, 9, 12, 11.1, -6.9], [57, 14, -7, -12, 7.5, -3.3],
+  [66, 9, 12, -9, 10.5, -8.1], [79, 3, -11, 8, 8.1, -1.8], [88, 14, 8, 12, 11.7, -5.2],
+  [96, 7, -9, -10, 9.1, -4.1], [99, 28, 10, 7, 7.9, -7.7], [3, 34, 11, 9, 10.2, -2.3],
+  [8, 52, -8, 12, 7.4, -6.2], [12, 68, 10, -9, 9.6, -3.8], [20, 84, -12, 8, 11.4, -8.4],
+  [29, 96, 8, -11, 8.6, -1.1], [39, 91, -9, -12, 10.7, -5.6], [48, 84, 11, 9, 7.8, -7.3],
+  [59, 96, -10, -8, 9.4, -2.5], [69, 88, 8, 12, 11.9, -6.7], [77, 98, -11, -9, 8.2, -4.3],
+  [86, 90, 12, 7, 10.1, -1.6], [95, 96, -8, -12, 7.6, -5.9], [97, 74, 10, 9, 9.8, -3.2],
+  [7, 31, -9, 10, 8.3, -6.1], [8, 63, 11, -8, 10.6, -2.1], [9, 91, -10, -9, 7.9, -4.7],
+  [91, 29, 8, -11, 9.5, -7.5], [92, 58, -12, 9, 11.2, -3.5], [93, 93, 9, -10, 8.7, -1.3],
+  [4, 16, 12, 8, 10.3, -8.3], [6, 47, -8, -12, 7.5, -5.5], [5, 73, 10, 11, 9.2, -2.9],
+  [95, 41, -11, 8, 11.6, -6.5], [94, 68, 9, 12, 8.4, -3.1], [96, 87, -10, -7, 10.8, -7.8],
+  ...Array.from({length: 48}, (_, index): HeroParticle => {
+    const lane = index % 4;
+    const offset = Math.floor(index / 4);
+    const edge = 2 + ((offset * 7) % 8);
+    const along = 5 + ((offset * 23) % 91);
+    const x = lane === 0 ? edge : lane === 1 ? 100 - edge : along;
+    const y = lane === 2 ? edge : lane === 3 ? 100 - edge : along;
+    const driftX = ((index * 17) % 25) - 12;
+    const driftY = ((index * 11 + 5) % 25) - 12;
+    const duration = 7 + ((index * 13) % 50) / 10;
+    const delay = -((index * 19) % 90) / 10;
 
-  if (name === 'state') {
-    return <svg {...common}><circle cx="6" cy="7" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="14" cy="18" r="2"/><path d="m8 7 8-1M7 9l6 7m4-8-2 8"/></svg>;
-  }
-  if (name === 'socratic') {
-    return <svg {...common}><path d="M5 5h14v10H9l-4 4V5Z"/><path d="M9 9h6m-6 3h3"/></svg>;
-  }
-  if (name === 'knowledge') {
-    return <svg {...common}><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H12v17H7.5A3.5 3.5 0 0 0 4 22V5.5Z"/><path d="M20 5.5A3.5 3.5 0 0 0 16.5 2H12v17h4.5A3.5 3.5 0 0 1 20 22V5.5Z"/></svg>;
-  }
-  if (name === 'memory') {
-    return <svg {...common}><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>;
-  }
-  if (name === 'skills') {
-    return <svg {...common}><path d="M8 3h8v5h5v8h-5v5H8v-5H3V8h5V3Z"/><path d="M9 12h6m-3-3v6"/></svg>;
-  }
-  return <svg {...common}><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="12" cy="17" r="3"/><path d="m9 9 2 5m4-5-2 5M10 7h4"/></svg>;
-}
+    return [x, y, driftX, driftY, duration, delay];
+  }),
+];
 
-function CognitiveStateVisual(): ReactNode {
+type ParticleStyle = CSSProperties & {
+  '--drift-x': string;
+  '--drift-y': string;
+  '--return-x': string;
+  '--return-y': string;
+  '--settle-x': string;
+  '--settle-y': string;
+};
+
+function WorkbenchDemo(): ReactNode {
   return (
-    <div className={styles.statePanel} role="img" aria-label="递归知识点的教学认知状态关系图">
-      <div className={styles.statePanelHeader}>
-        <div>
-          <span className={styles.statePanelKicker}>Learner state</span>
-          <strong>递归 · 认知状态</strong>
-        </div>
-        <span className={styles.stateStatus}><span />正在形成</span>
+    <div className={styles.demoFrame} aria-label="Converge 教学认知状态机制示意">
+      <div className={styles.demoTopbar}>
+        <div className={styles.demoBrand}><span className={styles.brandMark}>C</span><span>CONVERGE</span></div>
+        <span className={styles.demoProject}>LEARNING SESSION / 04</span>
+        <span className={styles.liveStatus}><i /> STATE UPDATED</span>
       </div>
-      <div className={styles.stateCanvas}>
-        <svg className={styles.stateEdges} viewBox="0 0 600 410" aria-hidden="true">
-          <path d="M300 92 C220 120 165 148 126 204" />
-          <path d="M300 92 C380 120 435 148 474 204" />
-          <path d="M126 234 C180 286 222 306 300 318" />
-          <path d="M474 234 C420 286 378 306 300 318" />
-          <path className={styles.stateEdgeActive} d="M126 204 C210 188 360 188 474 204" />
-        </svg>
-        <div className={clsx(styles.stateNode, styles.stateNodeTopic)}>
-          <span>主题</span><strong>递归</strong>
+      <div className={styles.demoBody}>
+        <div className={styles.stateCanvas}>
+          <div className={styles.canvasHeading}><span>LEARNER STATE</span><span>CONFIDENCE 0.82</span></div>
+          <div className={styles.graphVisual}>
+            <svg viewBox="0 0 480 210" role="img" aria-label="变量作用域概念与学习证据的关系图">
+              <path d="M82 98 C148 98 145 48 220 48 S304 98 386 98" />
+              <path d="M82 98 C148 98 145 160 220 160 S304 98 386 98" />
+              <path className={styles.graphActive} d="M220 48 C282 48 304 98 386 98" />
+              <circle cx="82" cy="98" r="10" /><circle cx="220" cy="48" r="10" />
+              <circle cx="220" cy="160" r="10" /><circle className={styles.graphFocus} cx="386" cy="98" r="12" />
+            </svg>
+            <span className={clsx(styles.graphLabel, styles.graphLabelA)}>函数</span>
+            <span className={clsx(styles.graphLabel, styles.graphLabelB)}>局部变量</span>
+            <span className={clsx(styles.graphLabel, styles.graphLabelC)}>作用范围</span>
+            <span className={clsx(styles.graphLabel, styles.graphLabelD)}>当前卡点</span>
+          </div>
+          <div className={styles.evidenceCard}>
+            <div className={styles.evidenceIcon}>↳</div>
+            <div><small>OBSERVED EVIDENCE</small><strong>两次混淆局部变量的作用范围</strong></div>
+            <span className={styles.evidenceScore}>2×</span>
+          </div>
         </div>
-        <div className={clsx(styles.stateNode, styles.stateNodeKnown)}>
-          <span>已掌握</span><strong>自调用</strong>
-        </div>
-        <div className={clsx(styles.stateNode, styles.stateNodeGap)}>
-          <span>知识缺口</span><strong>终止条件</strong>
-        </div>
-        <div className={clsx(styles.stateNode, styles.stateNodeAction)}>
-          <span>下一步</span><strong>调用栈追问</strong>
-        </div>
-        <div className={styles.stateEvidence}>
-          <span>证据</span>
-          <strong>连续两次无法说明 base case</strong>
-          <div><i /><em>置信度 0.82</em></div>
-        </div>
+        <aside className={styles.agentRail} aria-label="Agent 运行记录">
+          <div className={styles.railHeading}>AGENT RUN <span>03 steps</span></div>
+          <div className={styles.runItem}><i className={styles.runDotDone} /><div><strong>Tutor Agent</strong><span>识别学习目标</span></div><small>DONE</small></div>
+          <div className={styles.runItem}><i className={styles.runDotDone} /><div><strong>Evidence Check</strong><span>定位重复错误</span></div><small>DONE</small></div>
+          <div className={styles.runItem}><i className={styles.runDotNow} /><div><strong>Next Teaching Move</strong><span>生成情境对比追问</span></div><small>NOW</small></div>
+          <div className={styles.nextMove}><span>NEXT QUESTION</span><p>这个变量在函数外部也能被访问吗？为什么？</p><i>→</i></div>
+        </aside>
       </div>
-      <div className={styles.statePanelFooter}>
-        <span>状态随学习行为更新</span>
-        <span>Evidence-first</span>
-      </div>
+      <div className={styles.demoFoot}><span>机制示意 · 非产品截图</span><span>Evidence → State → Action</span></div>
+    </div>
+  );
+}
+function StateComparison(): ReactNode {
+  return (
+    <div className={styles.comparison}>
+      <div className={styles.comparisonSide}><span>CHAT HISTORY</span><p>“我知道局部变量。”</p><small>一条消息，停在对话里</small></div>
+      <div className={styles.comparisonArrow} aria-hidden="true">↗</div>
+      <div className={styles.comparisonFocus}><span>LEARNER MODEL</span><p>“能识别局部变量，但作用范围还不确定。”</p><small>知识点 · 错误证据 · 下一步教学</small></div>
     </div>
   );
 }
 
-function CognitiveLoop(): ReactNode {
-  return (
-    <div className={styles.loopVisual}>
-      <svg className={styles.loopTrack} viewBox="0 0 620 620" aria-hidden="true">
-        <circle cx="310" cy="310" r="220" />
-        <circle className={styles.loopPulse} cx="310" cy="310" r="220" />
-      </svg>
-      <div className={styles.loopCenter}>
-        <span>学习证据</span>
-        <strong>持续更新</strong>
-        <small>每轮对话都是一次观测</small>
-      </div>
-      {loopSteps.map((step, index) => (
-        <div key={step.name} className={clsx(styles.loopStep, loopStepClass[index])}>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <strong>{step.name}</strong>
-          <small>{step.detail}</small>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ArchitectureFlow(): ReactNode {
-  return (
-    <div className={styles.architectureFlow}>
-      <div className={clsx(styles.architectureNode, styles.architectureEntry)}>
-        <span>01</span><strong>用户</strong><small>学习问题与行为</small>
-      </div>
-      <span className={styles.architectureArrow}>↓</span>
-      <div className={clsx(styles.architectureNode, styles.architectureAgent)}>
-        <span>02</span><strong>Agent</strong><small>识别目标 · 评估回答</small>
-      </div>
-      <span className={styles.architectureArrow}>↓</span>
-      <div className={styles.architectureKnowledge}>
-        <div><span>03A</span><strong>Memory</strong></div>
-        <div><span>03B</span><strong>RAG</strong></div>
-        <div><span>03C</span><strong>Skills</strong></div>
-      </div>
-      <span className={styles.architectureArrow}>↓</span>
-      <div className={clsx(styles.architectureNode, styles.architectureMulti)}>
-        <span>04</span><strong>Multi-Agent</strong><small>分工 · 协作 · 结果合并</small>
-      </div>
-      <span className={styles.architectureArrow}>↓</span>
-      <div className={clsx(styles.architectureNode, styles.architectureTools)}>
-        <span>05</span><strong>Tools</strong><small>MCP · 知识库 · 工作区</small>
-      </div>
-      <span className={styles.architectureArrow}>↓</span>
-      <div className={clsx(styles.architectureNode, styles.architectureResult)}>
-        <span>06</span><strong>结果</strong><small>教学动作与状态更新</small>
-      </div>
-    </div>
-  );
+function FeatureVisual({index}: {index: number}): ReactNode {
+  if (index === 0) {
+    return <div className={styles.stateVisual}>
+      <div className={styles.stateVisualHeader}><span>CONCEPT / VARIABLE SCOPE</span><span className={styles.statePill}>IN PROGRESS</span></div>
+      <div className={styles.stateBars}><div><span>定义位置</span><i><b style={{width: '82%'}} /></i><strong>0.82</strong></div><div><span>可访问范围</span><i><b style={{width: '34%'}} /></i><strong>0.34</strong></div><div><span>生命周期</span><i><b style={{width: '57%'}} /></i><strong>0.57</strong></div></div>
+      <div className={styles.visualCaption}>STATE IS A MODEL — NOT A SCORE</div>
+    </div>;
+  }
+  if (index === 1) {
+    return <div className={styles.sourceVisual}>
+      <div className={styles.sourceNode}><span>QUESTION</span><strong>变量在哪里可用？</strong></div>
+      <div className={styles.sourceConnector}>↓</div>
+      <div className={styles.sourcePair}><div><span>MEMORY</span><strong>学习偏好</strong></div><div><span>WIKI + RAG</span><strong>概念依据</strong></div></div>
+      <div className={styles.sourceConnector}>↓</div>
+      <div className={styles.sourceNode + ' ' + styles.sourceConclusion}><span>TEACHING EVIDENCE</span><strong>以可回溯依据组织判断</strong></div>
+    </div>;
+  }
+  return <div className={styles.strategyVisual}>
+    <div className={styles.strategySignal}><span>STUDENT RESPONSE</span><strong>“局部变量到处都能用。”</strong></div>
+    <div className={styles.strategyPath}><span>01</span><b>不直接揭晓答案</b><i>→</i></div>
+    <div className={styles.strategyPath}><span>02</span><b>检查错误概念</b><i>→</i></div>
+    <div className={styles.strategyPath + ' ' + styles.strategyChosen}><span>03</span><b>用情境对比确认作用范围</b><i>✓</i></div>
+  </div>;
 }
 
 export default function Home(): ReactNode {
   return (
-    <Layout
-      title="教学认知状态引擎"
-      description="Converge 持续理解学习者会什么、不会什么、误解什么，以及下一步应该怎样教。"
-    >
+    <Layout title="理解学习者的 AI Agent 工作台" description="Converge 将教学认知状态、学习证据与 Multi-Agent 协作连接为可追踪的学习闭环。">
       <main className={styles.home}>
-        <section className={styles.hero} aria-labelledby="home-hero-title">
-          <Container size="wide" className={styles.heroGrid}>
-            <div className={styles.heroContent}>
-              <p className={styles.heroEyebrow}>面向编程教育的教学认知状态引擎</p>
-              <h1 id="home-hero-title">持续理解学生现在会什么，以及为什么会卡住。</h1>
-              <p className={styles.heroLead}>
-                Converge 将对话、知识检索、长期记忆和多 Agent 协作连接成可观察、可判断、可复盘的学习闭环。
-              </p>
+        <section className={styles.hero} aria-labelledby="hero-title">
+          <div className={styles.heroNoise} aria-hidden="true" />
+          <div className={styles.heroGrid}>
+            <div className={styles.heroCopy}>
+              <p className={styles.heroEyebrow}><span /> CONVERGE / LEARNING AGENT SYSTEM</p>
+              <h1 id="hero-title">让 Agent 理解学习者，<em>而不只理解提示词。</em></h1>
+              <p className={styles.heroLead}>一个以教学认知状态为核心的 Multi-Agent 工作台。把回答变成证据，把证据变成下一步教学。</p>
               <div className={styles.heroActions}>
-                <Button to="/docs" size="large">阅读快速开始</Button>
-                <Button to="/product" size="large" variant="secondary">了解产品</Button>
+                <Button to="/product" size="large">看 Agent 如何协作 <span aria-hidden="true">↘</span></Button>
+                <Link className={styles.heroTextLink} to="/docs">阅读快速开始 <span aria-hidden="true">→</span></Link>
               </div>
-              <div className={styles.heroMeta} aria-label="产品形态">
-                <span>Desktop</span><i />
-                <span>Wiki</span><i />
-                <span>Skills</span><i />
-                <span>Multi-Agent</span>
-              </div>
+              <p className={styles.heroMeta}>LEARNER STATE <i /> MULTI-AGENT <i /> EVIDENCE-LED</p>
             </div>
-            <CognitiveStateVisual />
-          </Container>
+            <div className={styles.heroVisual}>
+              <div className={styles.particleField} aria-hidden="true">
+                {heroParticles.map(([x, y, dx, dy, duration, delay], index) => (
+                  <i
+                    className={styles.particle}
+                    key={index}
+                    style={{
+                      left: `${x}%`,
+                      top: `${y}%`,
+                      '--drift-x': `${dx}px`,
+                      '--drift-y': `${dy}px`,
+                      '--return-x': `${-dx * 0.55}px`,
+                      '--return-y': `${-dy * 0.45}px`,
+                      '--settle-x': `${dx * 0.45}px`,
+                      '--settle-y': `${dy * 0.55}px`,
+                      animationDuration: `${duration}s`,
+                      animationDelay: `${delay}s`,
+                    } as ParticleStyle}
+                  />
+                ))}
+              </div>
+              <WorkbenchDemo />
+            </div>
+          </div>
+          <a className={styles.scrollHint} href="#positioning"><span /> SCROLL TO EXPLORE</a>
         </section>
 
-        <Section
-          id="positioning"
-          eyebrow="Product position"
-          title="不是保存聊天记录，而是理解学习状态。"
-          intro="Converge 关注知识点、错误证据和下一步教学动作之间的关系。"
-        >
-          <div className={styles.positioningGrid}>
-            <Card variant="plain" padding="small" className={styles.positioningItem}>
-              <span>01</span><strong>观察</strong><p>从回答、追问与练习中收集学习证据。</p>
-            </Card>
-            <Card variant="plain" padding="small" className={styles.positioningItem}>
-              <span>02</span><strong>判断</strong><p>识别掌握度、知识缺口与可能的误解。</p>
-            </Card>
-            <Card variant="plain" padding="small" className={styles.positioningItem}>
-              <span>03</span><strong>干预</strong><p>选择追问、提示、反例、练习或直接讲解。</p>
-            </Card>
+        <section className={styles.positioning} id="positioning">
+          <div className={styles.positioningIntro}>
+            <p className={styles.kicker}>THE SHIFT / 01</p>
+            <h2>聊天结束了。<br /><em>理解不该重置。</em></h2>
           </div>
-          <div className={styles.positioningShift}>
-            <div><span>普通对话记忆</span><strong>“学生说过什么”</strong></div>
-            <span className={styles.shiftArrow}>→</span>
-            <div className={styles.shiftTarget}><span>教学认知状态</span><strong>“学生现在理解到哪里”</strong></div>
+          <div className={styles.positioningBody}>
+            <p>大多数对话系统记下说过什么。Converge 进一步追问：学会了什么，哪里还不稳，下一步如何教？</p>
+            <StateComparison />
           </div>
-        </Section>
+        </section>
 
-        <Section
-          id="cognitive-model"
-          tone="ruled"
-          eyebrow="Mechanism model"
-          title="知识网络 × 教学认知状态"
-          intro="知识网络描述知识点及其关系；学习者状态描述学生在这张网络中的位置。"
-        >
-          <CognitiveModelFigure />
-        </Section>
-
-        <Section
-          id="learning-loop"
-          tone="subtle"
-          eyebrow="Teaching loop"
-          title="一次教学，不止一次回答。"
-          intro="认知状态随着新证据持续变化，并直接影响下一步教学动作。"
-          align="center"
-        >
-          <CognitiveLoop />
-        </Section>
-
-        <Section
-          id="capabilities"
-          eyebrow="Capabilities"
-          title="围绕学习过程组织能力"
-          intro="每个模块解决一个清晰问题，并共同服务于持续学习闭环。"
-        >
-          <div className={styles.capabilityGrid}>
-            <FeatureCard icon={<CapabilityIcon name="state" />} title="认知状态" description="维护掌握度、误解、阻塞点与证据来源。" />
-            <FeatureCard icon={<CapabilityIcon name="socratic" />} title="苏格拉底式教学" description="根据回答质量调整问题、提示和难度台阶。" />
-            <FeatureCard icon={<CapabilityIcon name="knowledge" />} title="RAG 与 Wiki" description="定位知识点、前置关系和可靠参考内容。" />
-            <FeatureCard icon={<CapabilityIcon name="memory" />} title="长期记忆" description="保留偏好、目标、约束与可审核的学习信息。" />
-            <FeatureCard icon={<CapabilityIcon name="skills" />} title="教学 Skills" description="把教学策略沉淀为可加载、可版本化的能力。" />
-            <FeatureCard icon={<CapabilityIcon name="agents" />} title="Multi-Agent" description="拆分复杂任务，协调执行并合并可靠结果。" />
+        <section className={styles.capabilities} id="product">
+          <div className={styles.sectionHeadRow}>
+            <div><p className={styles.kicker}>A LEARNING SYSTEM / 02</p><h2>从学习信号，<br />到有依据的教学动作。</h2></div>
+            <p className={styles.sectionAside}>不是把 Agent 越堆越多。是让每个教学决策都能回到学习证据。</p>
           </div>
-        </Section>
-
-        <Section
-          id="architecture"
-          tone="ruled"
-          eyebrow="Architecture"
-          title="清晰的软件边界，支撑持续教学"
-          intro="从学习行为进入 Agent 编排，再由知识、记忆、工具与多 Agent 协同完成闭环。"
-        >
-          <Diagram
-            title="Converge 系统工作流"
-            description="主要能力按职责分层，教学状态贯穿每一次执行。"
-            canvasClassName={styles.architectureCanvas}
-            scrollable={false}
-          >
-            <ArchitectureFlow />
-          </Diagram>
-        </Section>
-
-        <Section
-          id="scenarios"
-          eyebrow="Use cases"
-          title="服务真实的教与学过程"
-          intro="不替代学习者思考，也不替代教师判断。"
-        >
-          <div className={styles.scenarioGrid}>
-            <Card className={styles.scenarioCard}>
-              <span className={styles.scenarioIndex}>01</span>
-              <h3>学生自主学习</h3>
-              <p>从“不会”开始，通过追问、提示和迁移练习逐步形成理解。</p>
-              <div className={styles.scenarioPath}><span>表达问题</span><i /><span>获得脚手架</span><i /><span>验证理解</span></div>
-            </Card>
-            <Card className={styles.scenarioCard}>
-              <span className={styles.scenarioIndex}>02</span>
-              <h3>教师教学设计</h3>
-              <p>结合教学 Skills 与知识资料，组织课程、问题和分层练习。</p>
-              <div className={styles.scenarioPath}><span>确定目标</span><i /><span>选择策略</span><i /><span>生成方案</span></div>
-            </Card>
-            <Card className={styles.scenarioCard}>
-              <span className={styles.scenarioIndex}>03</span>
-              <h3>持续学习复盘</h3>
-              <p>让掌握度判断回到原始回答、错误模式和真实学习行为。</p>
-              <div className={styles.scenarioPath}><span>汇集证据</span><i /><span>识别变化</span><i /><span>安排复习</span></div>
-            </Card>
+          <div className={styles.featureList}>
+            {features.map((feature, index) => (
+              <article className={styles.featureRow} key={feature.number}>
+                <div className={styles.featureCopy}>
+                  <span className={styles.featureNumber}>{feature.number} / {feature.tag}</span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.text}</p>
+                  <Link to={index === 0 ? '/product' : '/docs'} className={styles.inlineLink}>探索机制 <span aria-hidden="true">↗</span></Link>
+                </div>
+                <FeatureVisual index={index} />
+              </article>
+            ))}
           </div>
-        </Section>
+        </section>
 
-        <Section
-          id="product-preview"
-          tone="subtle"
-          eyebrow="Product preview"
-          title="真实产品界面将在这里呈现"
-          intro="当前仓库没有可用于官网的产品截图，因此保留一个清晰、可直接替换的截图位置。"
-        >
-          <div className={styles.screenshotPlaceholder} role="img" aria-label="Converge 真实产品截图占位区域">
-            <div className={styles.screenshotPlaceholderBar}>
-              <span>Converge Desktop</span>
-              <span>真实截图待补充</span>
-            </div>
-            <div className={styles.screenshotPlaceholderBody}>
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                <rect x="5" y="7" width="38" height="34" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M5 15h38M15 15v26" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="m21 30 5-5 4 4 4-3 7 7" stroke="currentColor" strokeWidth="1.5"/>
-              </svg>
-              <strong>替换为真实桌面端产品截图</strong>
-              <p>建议尺寸 1600 × 1000，放入 static/img/product/ 后替换本区块。</p>
-            </div>
+        <section className={styles.workflow} id="how-it-works">
+          <div className={styles.workflowIntro}>
+            <p className={styles.kicker}>AGENT PIPELINE / 03</p>
+            <h2>一次回答，<br /><em>启动一条教学路径。</em></h2>
+            <p>Agent 根据目标、回答和错误证据协作，再把判断送回下一步教学。过程清晰、可以继续、可以复盘。</p>
           </div>
-        </Section>
+          <div className={styles.pipelineWrap}>
+            <StepSequence steps={['学习者表达', '识别目标', '评估证据', '协作诊断', '选择教学动作']} dark />
+            <div className={styles.pipelineFoot}><span>INPUT</span><span>ORCHESTRATION</span><span>STATE UPDATE</span></div>
+          </div>
+        </section>
 
-        <CTA
-          title="从软件手册开始了解 Converge"
-          description="查看项目定位、安装方式与核心概念，建立第一个可持续的学习闭环。"
-          actions={
-            <>
-              <Button to="/docs">阅读软件手册</Button>
-              <Button to="/download" variant="secondary">查看下载</Button>
-            </>
-          }
-        />
+        <section className={styles.developer} id="developers">
+          <div className={styles.developerCopy}>
+            <p className={styles.kicker}>FOR BUILDERS / 04</p>
+            <h2>教学策略，<br /><em>写得清楚，也能复用。</em></h2>
+            <p>从可读的 Skills 到 MCP 工具接入，从本地知识到可追踪的 Agent Run。沿用开放的开发工作流，不把教学策略锁进黑盒。</p>
+            <div className={styles.devLinks}><Link to="/developers">开发者入口 <span>↗</span></Link><Link to="/docs/tutorials/use-skills">Skills 教程 <span>↗</span></Link></div>
+          </div>
+          <div className={styles.developerCode}>
+            <CodeWindow filename="socratic-questioning.md" language="MARKDOWN" accent="A TEACHING SKILL" code={'## 执行流程\n\n1. 澄清概念\n2. 追问证据\n3. 探索假设\n4. 推理后果\n5. 反思迁移\n\n一次只问一个问题。\n根据回答调整下一步。'} />
+            <p className={styles.codeNote}>一个真实的项目教学策略文件 · Markdown 可读，可持续迭代</p>
+          </div>
+        </section>
+
+        <section className={styles.architecture} id="architecture">
+          <div className={styles.architectureTop}>
+            <div><p className={styles.kicker}>SYSTEM MAP / 05</p><h2>多 Agent，不是<br /><em>多一层黑盒。</em></h2></div>
+            <p>从用户交互到状态更新，每一层都有明确职责。知识来源、工具执行与持久化彼此分离。</p>
+          </div>
+          <div className={styles.architectureMap} aria-label="Converge 系统架构简图">
+            <div className={styles.archLayer}><span>01 / EXPERIENCE</span><strong>Desktop Workspace</strong><small>Chat · Wiki · Learning</small></div>
+            <div className={styles.layerLink} aria-hidden="true">↓</div>
+            <div className={styles.archLayer + ' ' + styles.archLayerActive}><span>02 / ORCHESTRATION</span><strong>Agent Runtime</strong><small>Socratic Agent · Task Orchestration · Multi-Agent</small></div>
+            <div className={styles.layerSplit}><div><span>03A / LEARNER MODEL</span><strong>State · Evidence</strong></div><div><span>03B / KNOWLEDGE</span><strong>RAG · Wiki · Skills</strong></div><div><span>03C / CONTEXT</span><strong>Memory · Session</strong></div></div>
+            <div className={styles.layerLink} aria-hidden="true">↓</div>
+            <div className={styles.archLayer}><span>04 / INFRASTRUCTURE</span><strong>Models · Tools · Storage</strong><small>MCP · Go / gRPC · SQLite</small></div>
+          </div>
+          <Link className={styles.archLink} to="/architecture">查看完整架构说明 <span>↗</span></Link>
+        </section>
+
+        <section className={styles.finalCta}>
+          <div className={styles.ctaGrid}>
+            <p className={styles.kicker}>START WITH THE SYSTEM</p>
+            <h2>先看它如何思考。<br /><em>再决定怎么构建。</em></h2>
+            <div className={styles.ctaActions}><Button to="/docs" size="large">打开软件手册</Button><Link to="/community">查看项目与贡献方式 →</Link></div>
+          </div>
+        </section>
       </main>
     </Layout>
   );

@@ -4,7 +4,7 @@ import styles from './CognitiveModelFigure.module.css';
 const knowledgeNodes = [
   {id: 'N01', title: '变量与作用域', state: '掌握稳定', kind: 'stable'},
   {id: 'N02', title: '函数与参数', state: '需要补课', kind: 'reinforce'},
-  {id: 'N03', title: '递归与调用栈', state: '关系误解', kind: 'misconception'},
+  {id: 'N03', title: '变量作用域', state: '关系误解', kind: 'misconception'},
   {id: 'N04', title: '指针与引用', state: '证据不足', kind: 'evidence'},
   {id: 'N05', title: '内存模型', state: '掌握稳定', kind: 'stable'},
 ] as const;
@@ -19,7 +19,7 @@ const relations = [
 const stateDimensions = [
   {index: '01', title: '掌握度', question: '哪些知识点稳定？', example: '变量作用域：稳定', kind: 'mastery'},
   {index: '02', title: '误解', question: '错误关系是什么？', example: '把“引用”理解为“复制对象”', kind: 'misconception'},
-  {index: '03', title: '卡点', question: '困难具体在哪里？', example: '递归边界与返回顺序混淆', kind: 'bottleneck'},
+  {index: '03', title: '卡点', question: '困难具体在哪里？', example: '局部变量的可访问范围混淆', kind: 'bottleneck'},
   {index: '04', title: '证据链', question: '判断依据是什么？', example: '回答 · 追问 · 提示 · 来源', kind: 'evidence'},
   {index: '05', title: '下一步教学', question: '接下来如何支持？', example: '追问 · 澄清 · 对比练习', kind: 'instruction'},
 ] as const;
