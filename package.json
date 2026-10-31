@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "node --test tests/*.test.mjs",
     "start": "docusaurus start",
     "build": "docusaurus build",
+    "export:preview": "npm run build && node scripts/export-preview.mjs",
     "serve": "docusaurus serve",
     "clear": "docusaurus clear",
     "lint": "eslint .",

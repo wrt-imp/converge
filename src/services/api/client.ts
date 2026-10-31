@@ -30,6 +30,14 @@ export class ApiClient {
   private readonly fetchImpl: typeof globalThis.fetch;
 
   constructor({baseUrl = '', fetch = globalThis.fetch}: ApiClientOptions = {}) {
+    if (baseUrl) {
+      const url = new URL(baseUrl);
+      const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+      if ((url.protocol !== 'https:' && !(url.protocol === 'http:' && local)) ||
+          url.username || url.password || url.search || url.hash) {
+        throw new Error('API 地址必须使用 HTTPS（本机调试除外），且不能包含凭据、查询参数或片段');
+      }
+    }
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.fetchImpl = fetch;
   }
@@ -59,7 +67,17 @@ export class ApiClient {
     method: HttpMethod,
     {body, headers, signal}: ApiRequestOptions = {},
   ): Promise<TResponse> {
+    // Keep all calls on the configured origin; never accept a user-supplied URL.
+    const hasControl = (value: string) => Array.from(value).some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127);
+    if (!path.startsWith('/') || path.startsWith('//') || /[\\\s#]/.test(path) || hasControl(path)) {
+      throw new Error('API 路径必须是以单个 / 开头的站内路径');
+    }
+    const decodedPath = decodeURIComponent(path.split('?')[0]);
+    if (decodedPath.includes('\\') || hasControl(decodedPath) || decodedPath.split('/').some(part => part === '.' || part === '..')) {
+      throw new Error('API 路径不能包含目录跳转或控制字符');
+    }
     const requestHeaders = new Headers(headers);
+    requestHeaders.set('Accept', 'application/json');
     const hasBody = body !== undefined;
     if (hasBody && !requestHeaders.has('Content-Type')) {
       requestHeaders.set('Content-Type', 'application/json');
@@ -70,6 +88,10 @@ export class ApiClient {
       headers: requestHeaders,
       body: hasBody ? JSON.stringify(body) : undefined,
       signal,
+      credentials: 'omit',
+      redirect: 'error',
+      cache: 'no-store',
+      referrerPolicy: 'no-referrer',
     });
     const payload = await response.json().catch(() => undefined);
 

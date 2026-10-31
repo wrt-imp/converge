@@ -19,3 +19,27 @@
 .faqMore > a { color: #c7b2ff; font-size: .8rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
 @media (max-width: 800px) { .faqContent { grid-template-columns: 1fr; gap: 26px; }.faqIndex { position: static; flex-direction: row; flex-wrap: wrap; gap: 9px; }.faqIndex a { padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 99px; }.faqMore { grid-template-columns: 1fr 1fr; }.faqMore > a { grid-column: 2; } }
 @media (max-width: 560px) { .faqContent { width: calc(100% - 40px); }.faqItem summary { grid-template-columns: 1fr 24px; gap: 8px; padding: 14px 0; }.faqItem summary > span { grid-column: 1; }.faqItem summary > strong { grid-column: 1; grid-row: 2; }.faqItem summary > i { grid-column: 2; grid-row: 1 / span 2; }.faqItem > p { margin: 0 24px 19px 0; font-size: .78rem; }.faqMore { grid-template-columns: 1fr; gap: 14px; padding-inline: 20px; }.faqMore > a { grid-column: 1; } }
+
+.faqPage { --faq-ink: #f1f2ff; --faq-muted: #aab0ca; --faq-line: rgba(158,169,255,.2); color: var(--faq-ink); background: #090a13; }
+.faqPage :global(section[class*='pageHero']) { color: var(--faq-ink); background: #090a13; }
+.faqPage :global(section[class*='pageHero']) h1 { color: var(--faq-ink); }
+.faqPage :global(section[class*='pageHero']) p[class*='pageHeroDescription'] { color: var(--faq-muted); }
+.faqIndex a { color: var(--faq-muted); }
+.faqIndex a:hover, .faqIndex a:focus-visible { color: #c2b9ff; }
+.faqIndex a:focus-visible, .faqItem summary:focus-visible, .faqMore > a:focus-visible { outline: 2px solid #a99aff; outline-offset: 4px; }
+.faqIndex a { border-color: var(--faq-line); }
+.faqList { border-color: var(--faq-line); }
+.faqItem { border-color: var(--faq-line); }
+.faqItem summary > span, .faqItem summary > i { color: #b2a6ff; }
+.faqItem summary > strong { color: var(--faq-ink); }
+.faqItem > p { color: var(--faq-muted); }
+.faqItem[open] summary > strong { color: #dcd7ff; }
+.faqMore { color: var(--faq-ink); background: #11142a; }
+.faqMore > div > span, .faqMore > a { color: #b6aaff; }
+.faqMore h2 { color: var(--faq-ink); }
+.faqMore > p { color: var(--faq-muted); }
+.faqItem summary > i { transition: transform 250ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faqItem summary > i { transition: none; }
+}

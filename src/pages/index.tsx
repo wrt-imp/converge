@@ -1,4 +1,4 @@
-import type {CSSProperties, ReactNode} from 'react';
+import {useEffect, useReducer, type CSSProperties, type ReactNode} from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
@@ -63,54 +63,127 @@ type ParticleStyle = CSSProperties & {
   '--settle-y': string;
 };
 
-function WorkbenchDemo(): ReactNode {
+const mechanismStages = [
+  {label: '01 / OBSERVE', tab: '学习信号', title: '看见学习过程', detail: '从回答、探索与练习中，捕捉学习信号。', caption: '回答 · 探索 · 练习'},
+  {label: '02 / CONNECT', tab: '证据关联', title: '连接学习证据', detail: '把过程、知识依据与反馈放到一起理解。', caption: '目标 · 过程 · 依据'},
+  {label: '03 / UNDERSTAND', tab: '状态理解', title: '形成动态理解', detail: '持续辨认已掌握之处与仍需支持的部分。', caption: '理解 · 迁移 · 巩固'},
+  {label: '04 / SUPPORT', tab: '教学支持', title: '给出下一步支持', detail: '根据当前状态，选择合适的解释、引导或练习。', caption: '解释 · 引导 · 验证'},
+];
+
+const mechanismStageDuration = 5000;
+type CarouselDirection = 'forward' | 'backward';
+type CarouselState = {active: number; previous: number | null; elapsed: number; playing: boolean; direction: CarouselDirection};
+type CarouselAction = {type: 'tick'; delta: number} | {type: 'go'; index: number; direction?: CarouselDirection} | {type: 'play' | 'pause' | 'toggle' | 'replay'};
+
+function carouselReducer(state: CarouselState, action: CarouselAction): CarouselState {
+  switch (action.type) {
+    case 'play': return {...state, playing: true};
+    case 'pause': return {...state, playing: false};
+    case 'toggle': return {...state, playing: !state.playing};
+    case 'replay': return {...state, previous: state.active === 0 ? state.previous : state.active, active: 0, elapsed: 0, playing: true, direction: 'forward'};
+    case 'go': {
+      const active = (action.index + mechanismStages.length) % mechanismStages.length;
+      return {...state, active, previous: active === state.active ? state.previous : state.active, elapsed: 0, direction: action.direction ?? (active > state.active ? 'forward' : 'backward')};
+    }
+    case 'tick': {
+      if (!state.playing) return state;
+      const elapsed = state.elapsed + action.delta;
+      if (elapsed < mechanismStageDuration) return {...state, elapsed};
+      return {...state, previous: state.active, active: (state.active + 1) % mechanismStages.length, elapsed: elapsed % mechanismStageDuration, direction: 'forward'};
+    }
+  }
+}
+
+function MechanismVisual({stage}: {stage: number}): ReactNode {
+  if (stage === 0) return (
+    <div className={styles.signalStudy}>
+      <div className={styles.signalDocument}><span>LEARNING NOTE</span><strong>从一次表达开始</strong><div className={styles.signalLines}><i /><i /><i /></div><small>记录思路，发现线索。</small></div>
+      <div className={styles.signalWords}><b>回答</b><b>探索</b><b>练习</b></div>
+    </div>
+  );
+  if (stage === 1) return (
+    <div className={styles.evidenceMap}>
+      <svg viewBox="0 0 300 230" aria-hidden="true" focusable="false"><path d="M62 46 L150 115 L238 46 M62 184 L150 115 L238 184" /><circle cx="150" cy="115" r="31" /></svg>
+      <span>学习目标</span><b>知识依据</b><strong>过程记录</strong><em>学习反馈</em><small>关联</small>
+    </div>
+  );
+  if (stage === 2) return (
+    <div className={styles.modelStudy}><span className={styles.modelStudyLabel}>LEARNER STATE</span><div className={styles.modelRows}><span>概念理解</span><i><b style={{width: '82%'}} /></i><small>稳定</small><span>迁移应用</span><i><b style={{width: '48%'}} /></i><small>发展中</small><span>长期保持</span><i><b style={{width: '31%'}} /></i><small>待观察</small></div><p>用新证据，继续更新理解。</p></div>
+  );
   return (
-    <div className={styles.demoFrame} aria-label="Converge 教学认知状态机制示意">
-      <div className={styles.demoTopbar}>
-        <div className={styles.demoBrand}><span className={styles.brandMark}>C</span><span>CONVERGE</span></div>
-        <span className={styles.demoProject}>LEARNING SESSION / 04</span>
-        <span className={styles.liveStatus}><i /> STATE UPDATED</span>
+    <div className={styles.supportStudy}><div className={styles.supportCheck} aria-hidden="true">✓</div><div className={styles.supportCard}><span>THE NEXT LEARNING MOVE</span><strong>适合此刻的学习支持</strong><div><b>解释</b><b>引导</b><b>练习</b></div><small>结合状态，继续验证。</small></div></div>
+  );
+}
+
+function MechanismScene(): ReactNode {
+  const [state, dispatch] = useReducer(carouselReducer, {active: 0, previous: null, elapsed: 0, playing: false, direction: 'forward'});
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = (): void => dispatch({type: preference.matches ? 'pause' : 'play'});
+    const frame = window.requestAnimationFrame(() => {
+      syncPreference();
+    });
+    preference.addEventListener('change', syncPreference);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      preference.removeEventListener('change', syncPreference);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!state.playing) return undefined;
+    let lastTick = window.performance.now();
+    const timer = window.setInterval(() => {
+      const now = window.performance.now();
+      const delta = Math.min(now - lastTick, 250);
+      lastTick = now;
+      if (!document.hidden) dispatch({type: 'tick', delta});
+    }, 50);
+    return () => window.clearInterval(timer);
+  }, [state.playing]);
+
+  return (
+    <div id="mechanism-demo" className={styles.mechanismScene} data-direction={state.direction} role="region" aria-roledescription="轮播" aria-label="Converge 学习机制演示" onKeyDown={(event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      const direction = event.key === 'ArrowRight' ? 'forward' : 'backward';
+      dispatch({type: 'go', index: state.active + (direction === 'forward' ? 1 : -1), direction});
+    }}>
+      <div className={styles.sceneStageViewport}>
+        <div className={styles.paperStack} aria-hidden="true"><i /><i /></div>
+        {mechanismStages.map((stage, index) => (
+          <article key={stage.label} className={clsx(styles.storyPage, index === state.active && styles.storyPageActive, index === state.previous && index !== state.active && styles.storyPageLeaving)} role="group" aria-roledescription="幻灯片" aria-label={`${index + 1} / 4：${stage.title}`} aria-hidden={index !== state.active}>
+            <div className={styles.storyPageTop}><span>{stage.label}</span><span>CONCEPT / {String(index + 1).padStart(2, '0')}</span></div>
+            <div className={styles.storyPageBody}>
+              <div className={styles.storyStageHeading}><h2><span>{stage.title.slice(0, 2)}</span>{stage.title.slice(2)}</h2><p>{stage.detail}</p></div>
+              <div className={styles.storyIllustration}><MechanismVisual stage={index} /></div>
+            </div>
+            <div className={styles.storyPageFoot}><span>{stage.caption}</span><b>{String(index + 1).padStart(2, '0')} <i>/ 04</i></b></div>
+          </article>
+        ))}
       </div>
-      <div className={styles.demoBody}>
-        <div className={styles.stateCanvas}>
-          <div className={styles.canvasHeading}><span>LEARNER STATE</span><span>CONFIDENCE 0.82</span></div>
-          <div className={styles.graphVisual}>
-            <svg viewBox="0 0 480 210" role="img" aria-label="变量作用域概念与学习证据的关系图">
-              <path d="M82 98 C148 98 145 48 220 48 S304 98 386 98" />
-              <path d="M82 98 C148 98 145 160 220 160 S304 98 386 98" />
-              <path className={styles.graphActive} d="M220 48 C282 48 304 98 386 98" />
-              <circle cx="82" cy="98" r="10" /><circle cx="220" cy="48" r="10" />
-              <circle cx="220" cy="160" r="10" /><circle className={styles.graphFocus} cx="386" cy="98" r="12" />
-            </svg>
-            <span className={clsx(styles.graphLabel, styles.graphLabelA)}>函数</span>
-            <span className={clsx(styles.graphLabel, styles.graphLabelB)}>局部变量</span>
-            <span className={clsx(styles.graphLabel, styles.graphLabelC)}>作用范围</span>
-            <span className={clsx(styles.graphLabel, styles.graphLabelD)}>当前卡点</span>
-          </div>
-          <div className={styles.evidenceCard}>
-            <div className={styles.evidenceIcon}>↳</div>
-            <div><small>OBSERVED EVIDENCE</small><strong>两次混淆局部变量的作用范围</strong></div>
-            <span className={styles.evidenceScore}>2×</span>
-          </div>
+      <div className={styles.sceneControls}>
+        <div className={styles.sceneProgress} role="group" aria-label="机制动画进度">
+          {mechanismStages.map((stage, index) => <button key={stage.label} type="button" className={clsx(styles.progressStep, index === state.active && styles.progressStepActive)} onClick={() => dispatch({type: 'go', index})} aria-label={`查看阶段：${stage.title}`} aria-current={index === state.active ? 'step' : undefined}><span><b>{stage.label.slice(0, 2)}</b>{stage.tab}</span><i><b style={{transform: `scaleX(${index < state.active ? 1 : index === state.active ? state.elapsed / mechanismStageDuration : 0})`}} /></i></button>)}
         </div>
-        <aside className={styles.agentRail} aria-label="Agent 运行记录">
-          <div className={styles.railHeading}>AGENT RUN <span>03 steps</span></div>
-          <div className={styles.runItem}><i className={styles.runDotDone} /><div><strong>Tutor Agent</strong><span>识别学习目标</span></div><small>DONE</small></div>
-          <div className={styles.runItem}><i className={styles.runDotDone} /><div><strong>Evidence Check</strong><span>定位重复错误</span></div><small>DONE</small></div>
-          <div className={styles.runItem}><i className={styles.runDotNow} /><div><strong>Next Teaching Move</strong><span>生成情境对比追问</span></div><small>NOW</small></div>
-          <div className={styles.nextMove}><span>NEXT QUESTION</span><p>这个变量在函数外部也能被访问吗？为什么？</p><i>→</i></div>
-        </aside>
+        <div className={styles.sceneControlBottom}><div className={styles.sceneButtons}>
+          <button type="button" onClick={() => dispatch({type: 'go', index: state.active - 1, direction: 'backward'})} aria-label="上一幕">←</button>
+          <button type="button" onClick={() => dispatch({type: state.playing ? 'pause' : 'play'})} aria-label={state.playing ? '暂停演示' : '继续演示'} aria-pressed={state.playing}>{state.playing ? '暂停' : '播放'} <span aria-hidden="true">{state.playing ? 'Ⅱ' : '▶'}</span></button>
+          <button type="button" onClick={() => dispatch({type: 'go', index: state.active + 1, direction: 'forward'})} aria-label="下一幕">→</button>
+          <button type="button" onClick={() => dispatch({type: 'replay'})} aria-label="从第一幕重新播放">↺</button>
+        </div></div>
       </div>
-      <div className={styles.demoFoot}><span>机制示意 · 非产品截图</span><span>Evidence → State → Action</span></div>
+      <span className={styles.carouselAnnouncement} aria-live="polite" aria-atomic="true">{state.playing ? '' : `第 ${state.active + 1} 幕：${mechanismStages[state.active].title}。轮播已暂停。`}</span>
     </div>
   );
 }
 function StateComparison(): ReactNode {
   return (
     <div className={styles.comparison}>
-      <div className={styles.comparisonSide}><span>CHAT HISTORY</span><p>“我知道局部变量。”</p><small>一条消息，停在对话里</small></div>
+      <div className={styles.comparisonSide}><span>CHAT HISTORY</span><p>“我大概理解这个知识点。”</p><small>一条消息，停在对话里</small></div>
       <div className={styles.comparisonArrow} aria-hidden="true">↗</div>
-      <div className={styles.comparisonFocus}><span>LEARNER MODEL</span><p>“能识别局部变量，但作用范围还不确定。”</p><small>知识点 · 错误证据 · 下一步教学</small></div>
+      <div className={styles.comparisonFocus}><span>LEARNER MODEL</span><p>“基本理解已建立，迁移应用仍需巩固。”</p><small>知识状态 · 学习证据 · 下一步支持</small></div>
     </div>
   );
 }
@@ -118,44 +191,44 @@ function StateComparison(): ReactNode {
 function FeatureVisual({index}: {index: number}): ReactNode {
   if (index === 0) {
     return <div className={styles.stateVisual}>
-      <div className={styles.stateVisualHeader}><span>CONCEPT / VARIABLE SCOPE</span><span className={styles.statePill}>IN PROGRESS</span></div>
-      <div className={styles.stateBars}><div><span>定义位置</span><i><b style={{width: '82%'}} /></i><strong>0.82</strong></div><div><span>可访问范围</span><i><b style={{width: '34%'}} /></i><strong>0.34</strong></div><div><span>生命周期</span><i><b style={{width: '57%'}} /></i><strong>0.57</strong></div></div>
-      <div className={styles.visualCaption}>STATE IS A MODEL — NOT A SCORE</div>
+      <div className={styles.stateVisualHeader}><span>LEARNING STATE / GENERAL MODEL</span><span className={styles.statePill}>IN PROGRESS</span></div>
+      <div className={styles.stateBars}><div><span>概念理解</span><i><b style={{width: '82%'}} /></i><strong>稳定</strong></div><div><span>迁移应用</span><i><b style={{width: '34%'}} /></i><strong>发展中</strong></div><div><span>长期保持</span><i><b style={{width: '57%'}} /></i><strong>待观察</strong></div></div>
+      <div className={styles.visualCaption}>LEARNING STATE IS CONTEXTUAL — NOT A FIXED SCORE</div>
     </div>;
   }
   if (index === 1) {
     return <div className={styles.sourceVisual}>
-      <div className={styles.sourceNode}><span>QUESTION</span><strong>变量在哪里可用？</strong></div>
+      <div className={styles.sourceNode}><span>LEARNING GOAL</span><strong>如何理解并应用这个知识点？</strong></div>
       <div className={styles.sourceConnector}>↓</div>
-      <div className={styles.sourcePair}><div><span>MEMORY</span><strong>学习偏好</strong></div><div><span>WIKI + RAG</span><strong>概念依据</strong></div></div>
+      <div className={styles.sourcePair}><div><span>LEARNING MEMORY</span><strong>已有进展与偏好</strong></div><div><span>WIKI + RAG</span><strong>学科知识依据</strong></div></div>
       <div className={styles.sourceConnector}>↓</div>
-      <div className={styles.sourceNode + ' ' + styles.sourceConclusion}><span>TEACHING EVIDENCE</span><strong>以可回溯依据组织判断</strong></div>
+      <div className={styles.sourceNode + ' ' + styles.sourceConclusion}><span>LEARNING EVIDENCE</span><strong>让判断有据可循</strong></div>
     </div>;
   }
   return <div className={styles.strategyVisual}>
-    <div className={styles.strategySignal}><span>STUDENT RESPONSE</span><strong>“局部变量到处都能用。”</strong></div>
-    <div className={styles.strategyPath}><span>01</span><b>不直接揭晓答案</b><i>→</i></div>
-    <div className={styles.strategyPath}><span>02</span><b>检查错误概念</b><i>→</i></div>
-    <div className={styles.strategyPath + ' ' + styles.strategyChosen}><span>03</span><b>用情境对比确认作用范围</b><i>✓</i></div>
+    <div className={styles.strategySignal}><span>LEARNER SIGNAL</span><strong>“我理解了，但还不确定能否自己运用。”</strong></div>
+    <div className={styles.strategyPath}><span>01</span><b>识别当前理解</b><i>→</i></div>
+    <div className={styles.strategyPath}><span>02</span><b>结合目标与学习证据</b><i>→</i></div>
+    <div className={styles.strategyPath + ' ' + styles.strategyChosen}><span>03</span><b>匹配下一步学习支持</b><i>✓</i></div>
   </div>;
 }
 
 export default function Home(): ReactNode {
   return (
-    <Layout title="理解学习者的 AI Agent 工作台" description="Converge 将教学认知状态、学习证据与 Multi-Agent 协作连接为可追踪的学习闭环。">
+    <Layout title="适用于多学科的 AI 学习协作平台" description="Converge 将不同学科的学习目标、过程证据与认知状态连接起来，支持个性化教学与持续学习。">
       <main className={styles.home}>
         <section className={styles.hero} aria-labelledby="hero-title">
           <div className={styles.heroNoise} aria-hidden="true" />
           <div className={styles.heroGrid}>
             <div className={styles.heroCopy}>
-              <p className={styles.heroEyebrow}><span /> CONVERGE / LEARNING AGENT SYSTEM</p>
-              <h1 id="hero-title">让 Agent 理解学习者，<em>而不只理解提示词。</em></h1>
-              <p className={styles.heroLead}>一个以教学认知状态为核心的 Multi-Agent 工作台。把回答变成证据，把证据变成下一步教学。</p>
+              <p className={styles.heroEyebrow}><span /> CONVERGE / LEARNING SYSTEM 01</p>
+              <h1 id="hero-title">让学习状态，<em>成为教学的下一步</em></h1>
+              <p className={styles.heroLead}>面向不同学科的学习与教学场景，Converge 将学习证据、认知状态与 Multi-Agent 协作连接起来，让每一步学习支持都有据可循。</p>
               <div className={styles.heroActions}>
-                <Button to="/product" size="large">看 Agent 如何协作 <span aria-hidden="true">↘</span></Button>
+                <Button to="/learn" size="large">进入学习工作台 <span aria-hidden="true">↘</span></Button>
                 <Link className={styles.heroTextLink} to="/docs">阅读快速开始 <span aria-hidden="true">→</span></Link>
               </div>
-              <p className={styles.heroMeta}>LEARNER STATE <i /> MULTI-AGENT <i /> EVIDENCE-LED</p>
+              <p className={styles.heroMeta}>LEARNER MODEL <i /> AGENT COLLABORATION <i /> TEACHING LOOP</p>
             </div>
             <div className={styles.heroVisual}>
               <div className={styles.particleField} aria-hidden="true">
@@ -178,7 +251,7 @@ export default function Home(): ReactNode {
                   />
                 ))}
               </div>
-              <WorkbenchDemo />
+              <MechanismScene />
             </div>
           </div>
           <a className={styles.scrollHint} href="#positioning"><span /> SCROLL TO EXPLORE</a>
@@ -187,7 +260,7 @@ export default function Home(): ReactNode {
         <section className={styles.positioning} id="positioning">
           <div className={styles.positioningIntro}>
             <p className={styles.kicker}>THE SHIFT / 01</p>
-            <h2>聊天结束了。<br /><em>理解不该重置。</em></h2>
+            <h2>聊天结束了<br /><em>理解不该重置</em></h2>
           </div>
           <div className={styles.positioningBody}>
             <p>大多数对话系统记下说过什么。Converge 进一步追问：学会了什么，哪里还不稳，下一步如何教？</p>
@@ -197,7 +270,7 @@ export default function Home(): ReactNode {
 
         <section className={styles.capabilities} id="product">
           <div className={styles.sectionHeadRow}>
-            <div><p className={styles.kicker}>A LEARNING SYSTEM / 02</p><h2>从学习信号，<br />到有依据的教学动作。</h2></div>
+            <div><p className={styles.kicker}>A LEARNING SYSTEM / 02</p><h2>从学习信号，<br />到有依据的教学动作</h2></div>
             <p className={styles.sectionAside}>不是把 Agent 越堆越多。是让每个教学决策都能回到学习证据。</p>
           </div>
           <div className={styles.featureList}>
@@ -218,7 +291,7 @@ export default function Home(): ReactNode {
         <section className={styles.workflow} id="how-it-works">
           <div className={styles.workflowIntro}>
             <p className={styles.kicker}>AGENT PIPELINE / 03</p>
-            <h2>一次回答，<br /><em>启动一条教学路径。</em></h2>
+            <h2>一次回答，<br /><em>启动一条教学路径</em></h2>
             <p>Agent 根据目标、回答和错误证据协作，再把判断送回下一步教学。过程清晰、可以继续、可以复盘。</p>
           </div>
           <div className={styles.pipelineWrap}>
@@ -230,7 +303,7 @@ export default function Home(): ReactNode {
         <section className={styles.developer} id="developers">
           <div className={styles.developerCopy}>
             <p className={styles.kicker}>FOR BUILDERS / 04</p>
-            <h2>教学策略，<br /><em>写得清楚，也能复用。</em></h2>
+            <h2>教学策略，<br /><em>写得清楚，也能复用</em></h2>
             <p>从可读的 Skills 到 MCP 工具接入，从本地知识到可追踪的 Agent Run。沿用开放的开发工作流，不把教学策略锁进黑盒。</p>
             <div className={styles.devLinks}><Link to="/developers">开发者入口 <span>↗</span></Link><Link to="/docs/tutorials/use-skills">Skills 教程 <span>↗</span></Link></div>
           </div>
@@ -242,7 +315,7 @@ export default function Home(): ReactNode {
 
         <section className={styles.architecture} id="architecture">
           <div className={styles.architectureTop}>
-            <div><p className={styles.kicker}>SYSTEM MAP / 05</p><h2>多 Agent，不是<br /><em>多一层黑盒。</em></h2></div>
+            <div><p className={styles.kicker}>SYSTEM MAP / 05</p><h2>多 Agent，不是<br /><em>多一层黑盒</em></h2></div>
             <p>从用户交互到状态更新，每一层都有明确职责。知识来源、工具执行与持久化彼此分离。</p>
           </div>
           <div className={styles.architectureMap} aria-label="Converge 系统架构简图">
@@ -259,7 +332,7 @@ export default function Home(): ReactNode {
         <section className={styles.finalCta}>
           <div className={styles.ctaGrid}>
             <p className={styles.kicker}>START WITH THE SYSTEM</p>
-            <h2>先看它如何思考。<br /><em>再决定怎么构建。</em></h2>
+            <h2>先看它如何思考<br /><em>再决定怎么构建</em></h2>
             <div className={styles.ctaActions}><Button to="/docs" size="large">打开软件手册</Button><Link to="/community">查看项目与贡献方式 →</Link></div>
           </div>
         </section>

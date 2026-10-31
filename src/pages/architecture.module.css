@@ -43,3 +43,42 @@
 .architectureCta > div:last-child { display: flex; justify-content: center; gap: 12px; }
 @media (max-width: 900px) { .layerMain { grid-template-columns: 34px 150px 1fr; }.dataTrace { grid-template-columns: 1fr; gap: 32px; } }
 @media (max-width: 620px) { .layerSection, .boundaries, .dataTrace, .architectureCta { padding-inline: 20px; }.layerMain { grid-template-columns: 26px 1fr; gap: 11px; padding: 17px; }.layerItems, .layerMain p { grid-column: 2; }.layerMain p { margin-top: 3px; }.boundaryGrid { grid-template-columns: 1fr; }.traceGraph { grid-template-columns: 1fr; }.traceGraph > i { transform: rotate(90deg); }.architectureCta > div:last-child { flex-direction: column; max-width: 280px; margin-inline: auto; } }
+
+.architecturePage { --arch-ink: #f1f2ff; --arch-muted: #aab0ca; --arch-soft: #929abc; --arch-line: rgba(158,169,255,.2); color: var(--arch-ink); background: #090a13; }
+.architecturePage :global(section[class*='pageHero']) { color: var(--arch-ink); background: #090a13; }
+.architecturePage :global(section[class*='pageHero']) h1 { color: var(--arch-ink); }
+.architecturePage :global(section[class*='pageHero']) p[class*='pageHeroDescription'] { color: var(--arch-muted); }
+.architecturePage :global(header[class*='sectionHeading']) h2 { color: var(--arch-ink); }
+.architecturePage :global(header[class*='sectionHeading']) p[class*='sectionDescription'] { color: var(--arch-muted); }
+.layerSection, .architectureCta { background: #090a13; }
+.archHeroCard, .layerMain { border-color: var(--arch-line); background: #111429; }
+.archHeroCard > span, .layerIndex, .boundaryGrid span { color: #b2a6ff; }
+.archHeroCard > div { border-color: var(--arch-line); }
+.archHeroCard i { color: #ddd8ff; background: rgba(113,102,224,.2); }
+.archHeroCard b, .layerLabel strong { color: var(--arch-ink); }
+.archHeroCard small, .layerLabel small { color: var(--arch-soft); }
+.layerMain p { color: var(--arch-muted); }
+.layerItems span { color: #d1d5ef; border-color: var(--arch-line); background: #191d34; }
+.layerRow:nth-child(2) .layerMain { border-color: rgba(167,151,255,.5); background: #151831; }
+.layerArrow span { background: linear-gradient(#657df1, #9c86ff); }
+.layerArrow span::after { border-color: #9c86ff; }
+.boundaries { background: #0e1020; }
+.boundaryGrid { border-color: var(--arch-line); background: var(--arch-line); }
+.boundaryGrid article { background: #111429; }
+.boundaryGrid h3 { color: var(--arch-ink); }
+.boundaryGrid p { color: var(--arch-muted); }
+.dataTrace { color: var(--arch-ink); background: #11142a; }
+.traceKicker, .traceGraph small { color: #b5aaff; }
+.dataTrace h2 { color: var(--arch-ink); }
+.dataTrace > div:first-child > p:not(.traceKicker) { color: var(--arch-muted); }
+.dataTrace a { color: #b6aaff; }
+.traceGraph > div { border-color: var(--arch-line); background: rgba(255,255,255,.035); }
+.traceGraph strong { color: var(--arch-ink); }
+.traceGraph span { color: var(--arch-muted); }
+.traceGraph > i { color: #91a0ff; }
+.traceGraph .traceAction { border-color: rgba(169,151,255,.42); background: rgba(108,94,220,.14); }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .layerMain, .boundaryGrid article, .traceGraph > div { transition: border-color 300ms ease, background-color 300ms ease, transform 300ms ease; }
+  .layerMain:hover, .boundaryGrid article:hover, .traceGraph > div:hover { border-color: rgba(169,151,255,.5); transform: translateY(-2px); }
+}

@@ -1,4 +1,4 @@
-/** Types mirror the read-only Skill responses in server/docs/api.md. */
+/** Read-only Skill shapes from integration/upstream-api-contract.md. */
 export type SkillAudience = 'student' | 'teacher' | 'both';
 
 export interface SkillSummary {

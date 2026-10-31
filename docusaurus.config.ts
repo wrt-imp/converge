@@ -3,7 +3,7 @@ import type {Options, ThemeConfig} from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Converge',
-  tagline: '面向编程教育的教学认知状态引擎',
+  tagline: '面向各学科的教育对话与资料工作台',
   url: 'https://converge.example.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -40,12 +40,11 @@ const config: Config = {
     navbar: {
       title: 'Converge',
       items: [
-        {to: '/product', label: '产品', position: 'left'},
-        {to: '/architecture', label: '架构', position: 'left'},
-        {to: '/developers', label: '开发者', position: 'left'},
+        {to: '/learn', label: '开始学习', position: 'left'},
+        {to: '/resources', label: '资料库', position: 'left'},
         {to: '/docs', label: '文档', position: 'left'},
         {to: '/download', label: '下载', position: 'right'},
-        {href: 'https://github.com/baibinggyu/Multi-Agent', label: 'GitHub ↗', position: 'right', target: '_blank', rel: 'noreferrer'},
+        {to: '/login', label: '登录', position: 'right', className: 'navbar-login'},
       ],
     },
     footer: {
@@ -66,13 +65,6 @@ const config: Config = {
             {label: '文档', to: '/docs'},
             {label: '常见问题', to: '/faq'},
             {label: '社区与贡献', to: '/community'},
-          ],
-        },
-        {
-          title: '项目',
-          items: [
-            {label: 'GitHub 源码', href: 'https://github.com/baibinggyu/Multi-Agent'},
-            {label: 'GitHub Issues', href: 'https://github.com/baibinggyu/Multi-Agent/issues'},
           ],
         },
       ],

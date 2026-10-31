@@ -7,7 +7,7 @@ description: Converge 教育 Multi-Agent 项目的软件手册与使用教程。
 
 # Converge 文档
 
-Converge 是面向编程教育的教学认知状态引擎：它把对话、苏格拉底式问答、知识检索、长期记忆、错题分析和 Skills 连接成一条持续学习闭环。
+Converge 面向不同学科的学习与教学场景，将学习对话、苏格拉底式问答、知识检索、长期记忆、学习证据和 Skills 连接成一条持续更新的教学闭环。
 
 <div className="docs-index-grid">
   <a href="/docs/manual/software-manual"><strong>软件手册</strong><span>了解工作区、核心能力和数据边界。</span></a>

@@ -58,3 +58,62 @@
 @keyframes orbitNode { 50% { box-shadow: 0 0 0 6px rgba(118,84,214,.13); } }
 @media (max-width: 850px) { .productThesis, .productProof { grid-template-columns: 1fr; gap: 36px; }.productThesis :global(header) { max-width: 660px; }.productProof { gap: 30px; } }
 @media (max-width: 600px) { .productPage > section { padding-inline: 20px; }.mechanismGrid { grid-template-columns: 1fr; }.mechanismGrid article { min-height: 225px; }.thesisColumns { grid-template-columns: 1fr 24px 1.2fr; gap: 6px; }.thesisColumns p { font-size: .83rem; }.thesisColumns small { font-size: .57rem; }.productNext > div:last-child { align-items: stretch; flex-direction: column; max-width: 260px; margin-inline: auto; } }
+
+/* Product route: carry the site's blue / violet / ink system into the full story. */
+.productPage { --product-ink: #f1f2ff; --product-muted: #aab0ca; --product-soft: #8f97b8; --product-line: rgba(158,169,255,.2); --product-panel: #101326; --product-raised: #171b31; color: var(--product-ink); background: #090a13; }
+.productPage :global(section[class*='pageHero']) { color: var(--product-ink); background: #090a13; }
+.productPage :global(section[class*='pageHero']) h1 { color: var(--product-ink); }
+.productPage :global(section[class*='pageHero']) p[class*='pageHeroDescription'] { color: var(--product-muted); }
+.productHeroVisual { border-color: var(--product-line); background: radial-gradient(ellipse at 50% 44%, rgba(95,105,221,.16), transparent 54%), linear-gradient(145deg, #11152a, #0b0d18 72%); }
+.visualLabel, .proofLabel { color: #a7aed1; }
+.loopOrbit { border-color: rgba(139,151,255,.55); box-shadow: 0 0 0 24px rgba(92,112,232,.045), 0 0 0 48px rgba(145,112,238,.025); }
+.loopOrbit::before, .loopOrbit::after { border-color: rgba(158,169,255,.28); }
+.loopOrbit > span { color: #e1ddff; }
+.loopOrbit > i { background: #8e80ff; }
+.orbitCaption { color: var(--product-soft); }
+.productThesis, .productFlow { color: var(--product-ink); background: #090a13; }
+.productPage :global(header[class*='sectionHeading']) h2 { color: var(--product-ink); }
+.productPage :global(header[class*='sectionHeading']) p[class*='sectionDescription'] { color: var(--product-muted); }
+.productThesis .thesisColumns { border-color: var(--product-line); }
+.thesisColumns span, .thesisColumns small { color: var(--product-soft); }
+.thesisColumns p { color: var(--product-ink); }
+.thesisTarget p, .thesisArrow { color: #aaa0ff; }
+.productBand { color: var(--product-ink); background: #0e1020; }
+.mechanismGrid { border-color: var(--product-line); background: var(--product-line); }
+.mechanismGrid article { background: var(--product-panel); transition: background-color 300ms ease; }
+.mechanismGrid article > span { color: var(--product-soft); }
+.mechanismGrid h3 { color: var(--product-ink); }
+.mechanismGrid p { color: var(--product-muted); }
+.miniNetwork::before { background: linear-gradient(90deg, #527fff, #a18bff); }
+.miniNetwork i, .miniNetwork b { border-color: var(--product-panel); background: #7185ff; box-shadow: 0 0 0 1px #7185ff; }
+.miniNetwork b { background: #a18bff; box-shadow: 0 0 0 1px #a18bff; }
+.miniAgents i, .miniAgents i:nth-child(2) { color: #d6d2ff; border-color: var(--product-line); background: var(--product-raised); }
+.miniAgents i:nth-child(3) { color: #d6d2ff; border-color: rgba(118,139,255,.34); background: rgba(79,111,234,.12); }
+.miniContext i { color: #d4d1ff; border-color: var(--product-line); background: var(--product-raised); }
+.productFlow .flowNote { color: var(--product-muted); }
+.productFlow :global(ol li), .productFlow :global(ol li:first-child), .productFlow :global(ol li:last-child) { border-color: var(--product-line); }
+.productFlow :global(ol li strong) { color: var(--product-ink); }
+.productFlow :global(ol li .stepNumber), .productFlow :global(ol li:not(:last-child)::after) { color: #aaa0ff; }
+.productProof { color: var(--product-ink); background: #11142a; }
+.productProof h2 { color: var(--product-ink); }
+.productProof > div:first-child > p:not(.proofLabel) { color: var(--product-muted); }
+.productProof > div:first-child > a { color: #b6aaff; }
+.proofPanel { border-color: var(--product-line); background: #0c0f20; }
+.proofPanel > span, .proofLabel, .proofPanel footer span { color: #b5aaff; }
+.proofPanel > div { border-color: var(--product-line); }
+.proofPanel label { color: var(--product-soft); }
+.proofPanel strong, .proofPanel footer b { color: var(--product-ink); }
+.proofPanel .proofGap strong { color: #d4ceff; }
+.proofPanel footer { border-color: rgba(156,139,255,.3); background: rgba(103,91,202,.12); }
+.productNext { color: var(--product-ink); background: #090a13; }
+.productNext > div:last-child { gap: 14px; }
+.productNext :global(a[class*='buttonPrimary']) { color: #fff; border-color: #6879f5; background: #596ce8; }
+.productNext :global(a[class*='buttonPrimary']:hover) { border-color: #a092ff; background: #7563eb; }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .mechanismGrid article:hover { background: #151a31; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loopOrbit::before, .loopOrbit::after, .loopOrbit > i { animation: none; }
+  .mechanismGrid article { transition: none; }
+}

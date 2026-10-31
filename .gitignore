@@ -1,12 +1,12 @@
-# Local dependencies and generated Docusaurus output.
 node_modules/
 .docusaurus/
 build/
-
-# Generated npm metadata is intentionally kept local during the early scaffold stage.
-package-lock.json
+preview/
+coverage/
 npm-debug.log*
-
-# Local environment values must never be committed.
 .env
-.env.local
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.tsbuildinfo

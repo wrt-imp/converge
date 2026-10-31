@@ -160,4 +160,4 @@ import {
 - 动效只用于 Hover、状态变化和空间反馈，并响应 `prefers-reduced-motion`。
 - 卡片以边框和背景层级为主，不使用发光、玻璃拟态和重阴影。
 - 真实截图与信息图优先于长段文字和抽象装饰。
-- 组件完成不代表页面完成；页面仍需按 `website/README.md` 的 Definition of Done 验收。
+- 组件完成不代表页面完成；页面仍需按根目录 `DESIGN-SYSTEM.md` 的完成标准验收。
